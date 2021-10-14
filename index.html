@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,18 +8,163 @@
     <title>2nonnon</title>
 </head>
 <style>
-    *{
+    * {
         margin: 0;
         padding: 0;
     }
-    body{
+
+    body {
         height: 100vh;
+        background-image: url(./large.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    img{
+
+    body::before {
+        content: '';
+        position: absolute;
+        display: block;
+        height: 100%;
         width: 100%;
+        backdrop-filter: blur(50px);
+        z-index: 0;
     }
 </style>
+
 <body>
-    <img src="./Et-a3toVEAEy0j0.jpg" alt="non">
+    <section id="el"></section>
+
+    <script>
+        // 初始化
+        let width, height;
+        let speed = 0.25;
+        const el = document.querySelector('#el');
+        const container = document.createElement('div');
+        const wrapper = document.createElement('div');
+        const pics = ['./01_non.jpg', './02_non.jpg', './03_non.jpg'];
+        const total = pics.length - 1;
+        const imgs = pics.map(url => {
+            const img = new Image();
+            img.src = url;
+            img.style = 'display: block; position: absolute';
+            width = img.width;
+            height = img.height;
+            return img;
+        });
+        const bar = document.createElement('div');
+        bar.style = `display: flex; width: ${(total + 1) * 1.5}rem; height: .8rem; justify-content: space-evenly; position: absolute; right: 5%; bottom: 5%`
+        const points = Array.from(new Array(total + 1), (item, i) => {
+            const point = document.createElement('div');
+            point.style = `width: .8rem; height: .8rem; border-radius: 50%; background-color: #FFFA; tansition: ${speed / 2}s`;
+            point.dataset['index'] = i;
+            return point;
+        });
+        imgs.forEach(img => wrapper.appendChild(img));
+        points.forEach(point => bar.appendChild(point));
+        container.appendChild(wrapper);
+        container.appendChild(bar);
+
+        const Left = document.createElement('div');
+        const Right = document.createElement('div');
+        Left.style = `height: 3rem; width: 3rem; position: absolute; left: 0; top: 50%; transform: translateY(-50%); line-height: 2rem; font-size: 3rem; text-align: center; color: #fff; opacity: 0.5`;
+        Left.innerText = '<';
+        Right.style = `height: 3rem; width: 3rem; position: absolute; right: 0; top: 50%; transform: translateY(-50%); line-height: 2rem; font-size: 3rem; text-align: center; color: #fff; opacity: 0.5`;
+        Right.innerText = '>';
+        container.appendChild(Left);
+        container.appendChild(Right);
+
+        wrapper.style = `height: ${height}px; width: ${width}px; position: relative; overflow: hidden`;
+        container.style = 'position: relative; user-select: none';
+        el.appendChild(container);
+
+        // controll
+        let hover = false;
+        let timer = null;
+        let raf = null;
+        bar.addEventListener('click', barClick);
+        function barClick(e) {
+            const index = parseInt(e.target.dataset.index);
+            if (raf) return;
+            if (index === pointer) return;
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            if (index > pointer) {
+                imgs[index].style.transform = `translate(${width}px, 0)`;
+                move(imgs[pointer], imgs[index], 1, speed);
+            }
+            if (index < pointer) {
+                imgs[index].style.transform = `translate(${-width}px, 0)`;
+                move(imgs[pointer], imgs[index], 1, speed, false);
+            }
+        }
+        Left.addEventListener('click', LeftClick);
+        Right.addEventListener('click', RightClick);
+        function LeftClick() {
+            if (raf) return;
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            const index = pointer - 1 < 0 ? total : pointer - 1;
+            imgs[index].style.transform = `translate(${-width}px, 0)`;
+            move(imgs[pointer], imgs[index], 1, speed, false);
+        }
+        function RightClick() {
+            if (raf) return;
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            const index = pointer + 1 > total ? 0 : pointer + 1;
+            move(imgs[pointer], imgs[index], 1, speed);
+        }
+
+        // 轮播
+        const fps = 60;
+        let pointer = 0;
+        imgs[total].style.transform = `translate(${-width}px, 0)`;
+        imgs[pointer + 1].style.transform = `translate(${width}px, 0)`;
+        points[pointer].style.backgroundColor = '#B92535';
+        function imgTurn(cur) {
+            const curIndex = imgs.indexOf(cur);
+            pointer = curIndex;
+            const nextIndex = curIndex + 1 > total ? 0 : curIndex + 1;
+            imgs[nextIndex].style.transform = `translate(${width}px, 0)`;
+            if (!hover) auto(cur, imgs[nextIndex]);
+        }
+        function move(cur, next, i = 1, speed = 0.25, left = true) {
+            raf = requestAnimationFrame(() => {
+                if (i > fps * speed) {
+                    imgTurn(next);
+                    raf = null;
+                    return;
+                }
+                if (i === 1) {
+                    points[imgs.indexOf(cur)].style.backgroundColor = '#fffa';
+                }
+                if (i === parseInt(fps * speed / 2)) {
+                    points[imgs.indexOf(next)].style.backgroundColor = '#B92535';
+                }
+                if (left) {
+                    cur.style.transform = `translate(${-width / (fps * speed) * i}px, 0)`;
+                    next.style.transform = `translate(${width - width / (fps * speed) * i}px, 0)`;
+                } else {
+                    cur.style.transform = `translate(${width / (fps * speed) * i}px, 0)`;
+                    next.style.transform = `translate(${-width + width / (fps * speed) * i}px, 0)`;
+                }
+                move(cur, next, i + 1, speed, left);
+            })
+        }
+        function auto(cur, next, delay = 2000) {
+            timer = setTimeout(move, delay, cur, next, 1, speed);
+        }
+        auto(imgs[0], imgs[1]);
+    </script>
 </body>
+
 </html>
