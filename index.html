@@ -6,33 +6,58 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2nonnon</title>
+    <link rel="shortcut icon" href="./n.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    
+        body {
+            height: 100vh;
+            background-image: url(./large.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        body::before {
+            content: '';
+            position: absolute;
+            display: block;
+            height: 100%;
+            width: 100%;
+            backdrop-filter: blur(50px);
+            z-index: 0;
+        }
+
+        @media (max-width: 1280px) {
+            #el {
+                transform: scale(.8);
+            }
+        }
+    
+        @media (max-width: 960px) {
+            #el {
+                transform: scale(.6);
+            }
+        }
+    
+        @media (max-width: 600px) {
+            #el {
+                transform: scale(.3);
+            }
+        }
+    
+        @media (max-width: 300px) {
+            #el {
+                transform: scale(.2);
+            }
+        } 
+    </style>
 </head>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        height: 100vh;
-        background-image: url(./large.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    body::before {
-        content: '';
-        position: absolute;
-        display: block;
-        height: 100%;
-        width: 100%;
-        backdrop-filter: blur(50px);
-        z-index: 0;
-    }
-</style>
 
 <body>
     <section id="el"></section>
@@ -40,7 +65,7 @@
     <script>
         // 初始化
         let width, height;
-        let speed = 0.25;
+        let speed = 0.2;
         const el = document.querySelector('#el');
         const container = document.createElement('div');
         const wrapper = document.createElement('div');
@@ -48,10 +73,8 @@
         const total = pics.length - 1;
         const imgs = pics.map(url => {
             const img = new Image();
-            img.src = url;
-            img.style = 'display: block; position: absolute';
-            width = img.width;
-            height = img.height;
+            img.dataset.src = url;
+            img.style = 'display: block; position: absolute; width: 100%; height: 100%';
             return img;
         });
         const bar = document.createElement('div');
@@ -76,9 +99,11 @@
         container.appendChild(Left);
         container.appendChild(Right);
 
-        wrapper.style = `height: ${height}px; width: ${width}px; position: relative; overflow: hidden`;
+        wrapper.style = `position: relative; overflow: hidden`;
         container.style = 'position: relative; user-select: none';
         el.appendChild(container);
+
+        imgs.forEach(item => item.src = item.dataset.src);        
 
         // controll
         let hover = false;
@@ -127,8 +152,6 @@
         // 轮播
         const fps = 60;
         let pointer = 0;
-        imgs[total].style.transform = `translate(${-width}px, 0)`;
-        imgs[pointer + 1].style.transform = `translate(${width}px, 0)`;
         points[pointer].style.backgroundColor = '#B92535';
         function imgTurn(cur) {
             const curIndex = imgs.indexOf(cur);
@@ -163,7 +186,15 @@
         function auto(cur, next, delay = 2000) {
             timer = setTimeout(move, delay, cur, next, 1, speed);
         }
-        auto(imgs[0], imgs[1]);
+        imgs[imgs.length - 1].onload = () => {
+            width = imgs[0].naturalWidth;
+            height = imgs[0].naturalHeight;
+            wrapper.style.width = `${width}px`;
+            wrapper.style.height = `${height}px`;
+            imgs[total].style.transform = `translate(${-width}px, 0)`;
+            imgs[pointer + 1].style.transform = `translate(${width}px, 0)`;
+            auto(imgs[0], imgs[1]);
+        };
     </script>
 </body>
 
