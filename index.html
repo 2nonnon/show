@@ -27,13 +27,13 @@
             content: '';
             position: absolute;
             display: block;
-            height: 100%;
-            width: 100%;
+            height: 100vh;
+            width: 100vw;
             backdrop-filter: blur(50px);
             z-index: 0;
         }
 
-        @media (max-width: 1280px) {
+        @media (min-width: 960px) {
             #el {
                 transform: scale(.8);
             }
@@ -41,7 +41,7 @@
     
         @media (max-width: 960px) {
             #el {
-                transform: scale(.6);
+                transform: scale(.5);
             }
         }
     
@@ -65,9 +65,8 @@
     <script>
         // 初始化
         let width, height;
-        let speed = 0.2;
+        const body = document.body;
         const el = document.querySelector('#el');
-        const container = document.createElement('div');
         const wrapper = document.createElement('div');
         const pics = ['./01_non.jpg', './02_non.jpg', './03_non.jpg'];
         const total = pics.length - 1;
@@ -77,114 +76,44 @@
             img.style = 'display: block; position: absolute; width: 100%; height: 100%';
             return img;
         });
-        const bar = document.createElement('div');
-        bar.style = `display: flex; width: ${(total + 1) * 1.5}rem; height: .8rem; justify-content: space-evenly; position: absolute; right: 5%; bottom: 5%`
-        const points = Array.from(new Array(total + 1), (item, i) => {
-            const point = document.createElement('div');
-            point.style = `width: .8rem; height: .8rem; border-radius: 50%; background-color: #FFFA; tansition: ${speed / 2}s`;
-            point.dataset['index'] = i;
-            return point;
-        });
+
         imgs.forEach(img => wrapper.appendChild(img));
-        points.forEach(point => bar.appendChild(point));
-        container.appendChild(wrapper);
-        container.appendChild(bar);
-
-        const Left = document.createElement('div');
-        const Right = document.createElement('div');
-        Left.style = `height: 3rem; width: 3rem; position: absolute; left: 0; top: 50%; transform: translateY(-50%); line-height: 2rem; font-size: 3rem; text-align: center; color: #fff; opacity: 0.5`;
-        Left.innerText = '<';
-        Right.style = `height: 3rem; width: 3rem; position: absolute; right: 0; top: 50%; transform: translateY(-50%); line-height: 2rem; font-size: 3rem; text-align: center; color: #fff; opacity: 0.5`;
-        Right.innerText = '>';
-        container.appendChild(Left);
-        container.appendChild(Right);
-
-        wrapper.style = `position: relative; overflow: hidden`;
-        container.style = 'position: relative; user-select: none';
-        el.appendChild(container);
+        wrapper.style = `position: relative; overflow: hidden; user-select: none`;
+        el.appendChild(wrapper);
 
         imgs.forEach(item => item.src = item.dataset.src);        
 
-        // controll
-        let hover = false;
-        let timer = null;
-        let raf = null;
-        bar.addEventListener('click', barClick);
-        function barClick(e) {
-            const index = parseInt(e.target.dataset.index);
-            if (raf) return;
-            if (index === pointer) return;
-            if (timer) {
-                clearTimeout(timer);
-                timer = null;
-            }
-            if (index > pointer) {
-                imgs[index].style.transform = `translate(${width}px, 0)`;
-                move(imgs[pointer], imgs[index], 1, speed);
-            }
-            if (index < pointer) {
-                imgs[index].style.transform = `translate(${-width}px, 0)`;
-                move(imgs[pointer], imgs[index], 1, speed, false);
-            }
-        }
-        Left.addEventListener('click', LeftClick);
-        Right.addEventListener('click', RightClick);
-        function LeftClick() {
-            if (raf) return;
-            if (timer) {
-                clearTimeout(timer);
-                timer = null;
-            }
-            const index = pointer - 1 < 0 ? total : pointer - 1;
-            imgs[index].style.transform = `translate(${-width}px, 0)`;
-            move(imgs[pointer], imgs[index], 1, speed, false);
-        }
-        function RightClick() {
-            if (raf) return;
-            if (timer) {
-                clearTimeout(timer);
-                timer = null;
-            }
-            const index = pointer + 1 > total ? 0 : pointer + 1;
-            move(imgs[pointer], imgs[index], 1, speed);
-        }
-
         // 轮播
         const fps = 60;
-        let pointer = 0;
-        points[pointer].style.backgroundColor = '#B92535';
-        function imgTurn(cur) {
-            const curIndex = imgs.indexOf(cur);
-            pointer = curIndex;
-            const nextIndex = curIndex + 1 > total ? 0 : curIndex + 1;
-            imgs[nextIndex].style.transform = `translate(${width}px, 0)`;
-            if (!hover) auto(cur, imgs[nextIndex]);
+        let speed = 0.2 * fps;
+        let cur = imgs[0];
+        let next = imgs[1];
+        let curIndex = 0;
+        let nextIndex = 1;
+        function imgTurn() {
+            curIndex = imgs.indexOf(next);
+            nextIndex = curIndex + 1 > total ? 0 : curIndex + 1;
+            cur = next;
+            next = imgs[nextIndex];
+            next.style.transform = `translate(${width}px, 0)`;
+            auto();
         }
-        function move(cur, next, i = 1, speed = 0.25, left = true) {
+        function move(i) {
             raf = requestAnimationFrame(() => {
-                if (i > fps * speed) {
-                    imgTurn(next);
-                    raf = null;
+                if (i > speed) {
+                    imgTurn();
                     return;
                 }
-                if (i === 1) {
-                    points[imgs.indexOf(cur)].style.backgroundColor = '#fffa';
+                if (i === Math.floor(speed / 2)) {
+                   body.style.backgroundImage = `url(${pics[imgs.indexOf(next)]})`;
                 }
-                if (i === parseInt(fps * speed / 2)) {
-                    points[imgs.indexOf(next)].style.backgroundColor = '#B92535';
-                }
-                if (left) {
-                    cur.style.transform = `translate(${-width / (fps * speed) * i}px, 0)`;
-                    next.style.transform = `translate(${width - width / (fps * speed) * i}px, 0)`;
-                } else {
-                    cur.style.transform = `translate(${width / (fps * speed) * i}px, 0)`;
-                    next.style.transform = `translate(${-width + width / (fps * speed) * i}px, 0)`;
-                }
-                move(cur, next, i + 1, speed, left);
+                cur.style.transform = `translate(${-width / speed * i}px, 0)`;
+                next.style.transform = `translate(${width - width / speed * i}px, 0)`;
+                move(i + 1);
             })
         }
-        function auto(cur, next, delay = 2000) {
-            timer = setTimeout(move, delay, cur, next, 1, speed);
+        function auto(delay = 2000) {
+            setTimeout(move, delay, 1);
         }
         imgs[imgs.length - 1].onload = () => {
             width = imgs[0].naturalWidth;
@@ -192,8 +121,8 @@
             wrapper.style.width = `${width}px`;
             wrapper.style.height = `${height}px`;
             imgs[total].style.transform = `translate(${-width}px, 0)`;
-            imgs[pointer + 1].style.transform = `translate(${width}px, 0)`;
-            auto(imgs[0], imgs[1]);
+            next.style.transform = `translate(${width}px, 0)`;
+            auto();
         };
     </script>
 </body>
