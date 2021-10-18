@@ -9,6 +9,7 @@
     color: #fff;
     font-weight: bold;
     height: 100%;
+    width: 100%;
     background-color: #FFDD00;
 }
 .email {

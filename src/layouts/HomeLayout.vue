@@ -16,14 +16,13 @@
 .container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-    gap: .5rem
+    min-height: 100vh;
+    gap: .5rem;
 }
 .container .header,
 .container .footer {
     flex-shrink: 0;
-    height: 2.5rem;
+    height: 3rem;
 }
 .container .header {
     position: sticky;

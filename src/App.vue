@@ -4,7 +4,7 @@
         <NavBar></NavBar>
       </template>
       <template #main>
-        <Main></Main>
+        <router-view></router-view>
       </template>
       <template #footer>
         <Contact></Contact>
@@ -16,7 +16,6 @@
 import HomeLayout from './layouts/HomeLayout.vue';
 import NavBar from './components/NavBar.vue';
 import Contact from './components/Contact.vue';
-import Main from './components/Main.vue';
 </script>
 
 <style>

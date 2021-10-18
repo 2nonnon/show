@@ -1,13 +1,18 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "游ゴシック", "Yu Gothic", YuGothic, sans-serif;
-    /* font-family: Helvetica, "PingFang SC", "Microsoft Yahei", sans-serif; */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "游ゴシック", "Yu Gothic", YuGothic, sans-serif;
+  /* font-family: Helvetica, "PingFang SC", "Microsoft Yahei", sans-serif; */
+}
+
+body {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
