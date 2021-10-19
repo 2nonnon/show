@@ -1,8 +1,8 @@
 <template>
     <section class="container">
-        <div class="left center" @click="goHome">NON</div>
+        <div class="left center" @click="menuNav()">NON</div>
         <div class="right">
-            <div class="search icon" @click="search"></div>
+            <div class="search icon" :class="{ 'active': toggleS }" @click="search"></div>
             <div class="menu icon" @click="menu"></div>
         </div>
         <div class="wrapper" v-if="toggleS">
@@ -12,7 +12,7 @@
         <div class="categories" v-if="toggleM">
             <div class="close" @click="menu"></div>
             <div class="item" v-for="category, i in categories" :key="i">
-                <span>{{ category }}</span>
+                <span @click="menuNav(category)">{{ category }}</span>
             </div>
         </div>
     </section>
@@ -21,16 +21,24 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref } from '@vue/reactivity';
+// 首页
 const router = useRouter();
-const goHome = () => router.push({ name: 'Main' });
+// 搜索
 let toggleS = ref(false);
 const search = () => {
     toggleS.value = !toggleS.value;
 }
-const categories = ref(['Home', 'Web', 'Other', 'Contact']);
+// 菜单
 let toggleM = ref(false);
 const menu = () => {
     toggleM.value = !toggleM.value;
+}
+// 菜单选项
+const categories = ref(['Home', 'Web', 'Other', 'Contact']);
+const menuNav = (target) => {
+    if (!target || target === 'Home') target = 'News';
+    router.push({ name: 'Category' , params:{ 'category': target }})
+    menu();
 }
 </script>
 
@@ -91,7 +99,7 @@ const menu = () => {
     padding-top: 8rem;
 }
 .categories > .close {
-    background-image: url(https://nondesu.jp/control-panel/wp-content/themes/non-official/assets/img/menu_off.png);
+    background-image: url(../assets/img/menu_off.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -104,12 +112,13 @@ const menu = () => {
 .categories > .item {
     text-align: center;
     margin-bottom: 2.25rem;
+    -webkit-tap-highlight-color: transparent;
 }
 .categories > .item > span {
     font-weight: bold;
     font-size: 1.25rem;
-    padding-bottom: .5rem;
-    border-bottom: .25rem solid #ffee7f;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.25rem solid #ffee7f;
 }
 .right {
     width: 4rem;
@@ -124,10 +133,21 @@ const menu = () => {
     background-repeat: no-repeat;
 }
 .search {
-    background-image: url(https://nondesu.jp/control-panel/wp-content/themes/non-official/assets/img/search_on.png);
+    background-image: url(../assets/img/search_on.png);
 }
 .menu {
     background-size: cover;
-    background-image: url(https://nondesu.jp/control-panel/wp-content/themes/non-official/assets/img/menu_on.png);
+    background-image: url(../assets/img/menu_on.png);
+}
+.active {
+    background-image: url(../assets/img/menu_white_off.png);
+}
+.left,
+.search,
+.menu,
+.button,
+.close,
+.item {
+    cursor: pointer;
 }
 </style>

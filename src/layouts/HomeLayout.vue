@@ -17,7 +17,12 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    gap: .5rem;
+    gap: 0.5rem;
+}
+@media (min-width: 1080px) {
+    .container {
+        min-width: 16rem;
+    }
 }
 .container .header,
 .container .footer {

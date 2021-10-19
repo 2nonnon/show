@@ -15,7 +15,7 @@
 .email {
     background-position: 0 50%;
     background-repeat: no-repeat;
-    background-image: url(https://nondesu.jp/control-panel/wp-content/themes/non-official/assets/img/ico_mail.png);
+    background-image: url(../assets/img/ico_mail.png);
     padding-left: 40px;
 }
 </style>
