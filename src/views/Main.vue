@@ -21,33 +21,14 @@ import { watch } from '@vue/runtime-core';
 import ArticleCard from '../components/ArticleCard.vue';
 const category = ref('NEWS');
 const route = useRoute();
-const articles = ref([{
-    imgUrl: require('../assets/6b70920d25d5be7b0a0b9bb6c23462e6.jpg'),
-    title: 'のんYouTube「のんやろが！ちゃんねる」＃6 配信です！「ひげのん!?」YouTubeネームを考える',
-    tags: ['Other', 'Web'],
-    time: '2021.10.17',
-    id: '0001'
-},{
-    imgUrl: require('../assets/6b70920d25d5be7b0a0b9bb6c23462e6.jpg'),
-    title: 'のんYouTube「のんやろが！ちゃんねる」＃6 配信です！「ひげのん!?」YouTubeネームを考える',
-    tags: ['Other', 'Web'],
-    time: '2021.10.17',
-    id: '0002'
-},{
-    imgUrl: require('../assets/6b70920d25d5be7b0a0b9bb6c23462e6.jpg'),
-    title: 'のんYouTube「のんやろが！ちゃんねる」＃6 配信です！「ひげのん!?」YouTubeネームを考える',
-    tags: ['Other', 'Web'],
-    time: '2021.10.17',
-    id: '0003'
-},{
-    imgUrl: require('../assets/6b70920d25d5be7b0a0b9bb6c23462e6.jpg'),
-    title: 'のんYouTube「のんやろが！ちゃんねる」＃6 配信です！「ひげのん!?」YouTubeネームを考える',
-    tags: ['Other', 'Web'],
-    time: '2021.10.17',
-    id: '0004'
-}]);
+const articles = ref(null);
+// fetch请求本地文件时的路径应该相对于index.html
+fetch('./json/articles.json')
+    .then(_ => _.json())
+    .then(res => {
+        articles.value = res
+    })
 watch(() => route.params.category, () => {
-    console.log(route.params.category);
     category.value = route.params.category;
 })
 </script>

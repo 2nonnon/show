@@ -37,8 +37,8 @@ const menu = () => {
 const categories = ref(['Home', 'Web', 'Other', 'Contact']);
 const menuNav = (target) => {
     if (!target || target === 'Home') target = 'News';
-    router.push({ name: 'Category' , params:{ 'category': target }})
-    menu();
+    router.replace({ name: 'Category' , params:{ 'category': target }})
+    if (toggleM.value) menu();
 }
 </script>
 

@@ -4,7 +4,7 @@
             <img :src="imgUrl" />
         </div>
         <div class="content">
-            <div class="title" @click="toArticle(id)">
+            <div class="title" @click="toArticle(id, tags[0])">
                 <h3>{{ title }}</h3>
             </div>
             <div class="tags">
@@ -12,7 +12,7 @@
             </div>
             <div class="bottom">
                 <div class="time">{{ props.time }}</div>
-                <div class="continue" @click="toArticle(id)">继续阅读</div>
+                <div class="continue" @click="toArticle(id, tags[0])">继续阅读</div>
             </div>
         </div>
     </div>
@@ -45,18 +45,19 @@ const props = defineProps({
     }
 })
 const tagNav = (tag) => {
-    router.push({
+    router.replace({
         name: 'Category',
         params: {
             'category': tag
         }
     })
 }
-const toArticle = (id) => {
-    router.push({
-        name: 'Article',
+const toArticle = (id, tag) => {
+    router.replace({
+        name: 'Container',
         params: {
-            'id': id
+            'category': tag,
+            'id': id,
         }
     })
 }
