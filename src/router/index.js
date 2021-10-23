@@ -6,12 +6,12 @@ const routes = [
     redirect: {
       name: 'Category',
       params: {
-        category: 'News'
+        category: 'news'
       }
     }
   },
   {
-    path: '/:category',
+    path: '/main/:category',
     name: 'Category',
     component: () => import(/* webpackChunkName: "Main" */ '../views/Main.vue'),
     // children: [
@@ -19,7 +19,7 @@ const routes = [
     // ]
   },
   {
-    path: '/:category',
+    path: '/article/:tag',
     name: 'Container',
     component: () => {
       return import(/* webpackChunkName: "Container" */ '../views/Container.vue')
@@ -31,6 +31,10 @@ const routes = [
         component: () => import(/* webpackChunkName: "0001" */ '../pages/0001.vue')
       }
     ]
+  },
+  {
+    path: '/:pathMatch(.*)',
+    component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFound.vue')
   }
 ]
 
@@ -44,6 +48,7 @@ router.beforeEach((to) => {
     return {
       name: to.params.id,
       params: {
+        tag: to.params.tag,
         id: to.params.id
       }
     }

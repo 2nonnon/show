@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="cover">
+        <div class="cover" @click="toArticle(id, tags[0])">
             <img :src="imgUrl" />
         </div>
         <div class="content">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { defineProps } from '@vue/runtime-core';
+import { defineProps, defineEmits } from '@vue/runtime-core';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const props = defineProps({
@@ -44,7 +44,14 @@ const props = defineProps({
         required: true
     }
 })
+const emit = defineEmits({
+    'cateChange': function() {
+        return true;
+    }
+})
 const tagNav = (tag) => {
+    console.log(tag)
+    emit('cateChange', tag)
     router.replace({
         name: 'Category',
         params: {
@@ -53,10 +60,11 @@ const tagNav = (tag) => {
     })
 }
 const toArticle = (id, tag) => {
+    console.log(id, tag)
     router.replace({
         name: 'Container',
         params: {
-            'category': tag,
+            'tag': tag,
             'id': id,
         }
     })

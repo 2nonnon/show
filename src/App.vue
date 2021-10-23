@@ -1,5 +1,5 @@
 <template>
-  <HomeLayout>
+  <Layout>
       <template #header>
         <NavBar></NavBar>
       </template>
@@ -9,11 +9,11 @@
       <template #footer>
         <Contact></Contact>
       </template>
-  </HomeLayout>
+  </Layout>
 </template>
 
 <script setup>
-import HomeLayout from './layouts/HomeLayout.vue';
+import Layout from './layouts/Layout.vue';
 import NavBar from './components/NavBar.vue';
 import Contact from './components/Contact.vue';
 </script>

@@ -21,6 +21,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref } from '@vue/reactivity';
+import bus from '../libs/bus'
 // 首页
 const router = useRouter();
 // 搜索
@@ -37,7 +38,8 @@ const menu = () => {
 const categories = ref(['Home', 'Web', 'Other', 'Contact']);
 const menuNav = (target) => {
     if (!target || target === 'Home') target = 'News';
-    router.replace({ name: 'Category' , params:{ 'category': target }})
+    router.replace({ name: 'Category' , params:{ 'category': target.toLowerCase() }});
+    bus.emit('cateChange', target.toUpperCase())
     if (toggleM.value) menu();
 }
 </script>
