@@ -14,9 +14,6 @@ const routes = [
     path: '/main/:category',
     name: 'Category',
     component: () => import(/* webpackChunkName: "Main" */ '../views/Main.vue'),
-    // children: [
-
-    // ]
   },
   {
     path: '/article/:tag',

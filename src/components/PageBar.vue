@@ -15,9 +15,19 @@
 
 <script setup>
 import { ref, reactive, computed } from "@vue/reactivity";
-const pages = ref([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-// const pageShow = ref(null);
-// const active = ref(1);
+import { defineEmits } from '@vue/runtime-core';
+import bus from "../libs/bus";
+const pages = ref([])
+const getTotal = (total) => {
+    console.log(total)
+    for (let i = 1; i <= total; i++) {
+        pages.value.push(i);
+    }
+};
+bus.on('totalGet', getTotal)
+
+const emit = defineEmits(['pageChange']);
+
 const control = reactive({
     active: 1,
     pageShow: computed(() => pages.value.filter(num => {
@@ -36,31 +46,40 @@ const control = reactive({
         else return false;
     }),
     end: computed(() => {
-        if (pages.value.length - control.active > 3) return true;
+        if (pages.value.length - control.active > 2) return true;
         else return false;
     })
 })
 
+// 点击时间
 const start = () => {
     control.active = 1
+    emit('pageChange', control.active)
 }
 const last = () => {
     control.active -= 1
+    emit('pageChange', control.active)
 }
 const next = () => {
     control.active += 1
+    emit('pageChange', control.active)
 }
 const end = () => {
     control.active = pages.value.length
+    emit('pageChange', control.active)
 }
 const toPage = (page) => {
-    control.active = page
+    if (page !== control.active) {
+        control.active = page
+        emit('pageChange', control.active)
+    }
 }
 </script>
 
 <style scoped>
 .container {
     margin: 1rem auto;
+    user-select: none;
 }
 .page-item {
     height: 2rem;

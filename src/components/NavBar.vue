@@ -2,12 +2,12 @@
     <section class="container">
         <div class="left center" @click="menuNav()">NON</div>
         <div class="right">
-            <div class="search icon" :class="{ 'active': toggleS }" @click="search"></div>
-            <div class="menu icon" @click="menu"></div>
+            <div class="search icon" :class="{ 'active': toggleS }" @click="searchToggle"></div>
+            <div class="menu icon" @click="menuToggle"></div>
         </div>
         <div class="wrapper" v-if="toggleS">
-            <input type="text" />
-            <div class="button">SEARCH</div>
+            <input type="text" autofocus="autofocus" v-model.lazy="value" />
+            <div class="button" @click="search">SEARCH</div>
         </div>
         <div class="categories" v-if="toggleM">
             <div class="close" @click="menu"></div>
@@ -20,18 +20,27 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import { defineEmits } from '@vue/runtime-core';
 import { ref } from '@vue/reactivity';
 import bus from '../libs/bus'
 // 首页
 const router = useRouter();
-// 搜索
+// 搜索切换
 let toggleS = ref(false);
-const search = () => {
+const searchToggle = () => {
     toggleS.value = !toggleS.value;
 }
-// 菜单
+// 搜索事件触发
+const value = ref('')
+const emit = defineEmits(['search']);
+const search = () => {
+    console.log(value.value);
+    if (value.value !== '') emit('search', value.value)
+    value.value = ''
+}
+// 菜单切换
 let toggleM = ref(false);
-const menu = () => {
+const menuToggle = () => {
     toggleM.value = !toggleM.value;
 }
 // 菜单选项
@@ -40,7 +49,7 @@ const menuNav = (target) => {
     if (!target || target === 'Home') target = 'News';
     router.replace({ name: 'Category' , params:{ 'category': target.toLowerCase() }});
     bus.emit('cateChange', target.toUpperCase())
-    if (toggleM.value) menu();
+    if (toggleM.value) menuToggle();
 }
 </script>
 

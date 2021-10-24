@@ -9,10 +9,10 @@
             :time="item.time"
             :id="item.id"
             ></ArticleCard> -->
-            <ArticleCard v-bind="item" @cate-change="changeCate"></ArticleCard> 
+            <ArticleCard v-bind="item" @cateChange="changeCate"></ArticleCard> 
         </template>
     </div>
-    <PageBar></PageBar>
+    <PageBar @pageChange="changePage"></PageBar>
 </template>
 
 <script setup>
@@ -27,13 +27,26 @@ const category = ref('NEWS');
 // const route = useRoute();
 const articles = ref(null);
 const show = ref(null);
+const per = 3;
+const len = ref(0);
+const pages = ref(0);
+const start = ref(0);
 // fetch请求本地文件时的路径应该相对于index.html
 fetch('../json/articles.json')
     .then(_ => _.json())
     .then(res => {
         articles.value = res
-        show.value = res
+        show.value = res.slice(start.value, start.value + per)
+        len.value = articles.value.length
+        pages.value = Math.ceil(len.value / per)
+        bus.emit('totalGet', pages.value)
     })
+
+// 根据页码改变内容
+const changePage = page => {
+    start.value = (page - 1) * per
+    show.value = articles.value.slice(start.value, start.value + per)
+}
 
 // 根据页面改变类别
 // watch(() => route.params.category, () => {
