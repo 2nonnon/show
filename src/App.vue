@@ -17,7 +17,3 @@ import Layout from './layouts/Layout.vue';
 import NavBar from './components/NavBar.vue';
 import Contact from './components/Contact.vue';
 </script>
-
-<style>
-
-</style>

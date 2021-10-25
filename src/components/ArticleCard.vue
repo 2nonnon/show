@@ -44,11 +44,13 @@ const props = defineProps({
         required: true
     }
 })
+// 类别切换触发事件
 const emit = defineEmits({
     'cateChange': function() {
         return true;
     }
 })
+// tag标签事件，进入相应类别主页
 const tagNav = (tag) => {
     console.log(tag)
     emit('cateChange', tag)
@@ -59,6 +61,7 @@ const tagNav = (tag) => {
         }
     })
 }
+// 进入文章页面
 const toArticle = (id, tag) => {
     console.log(id, tag)
     router.replace({

@@ -23,14 +23,14 @@ import { onBeforeUnmount } from '@vue/runtime-core';
 import ArticleCard from '../components/ArticleCard.vue';
 import PageBar from '../components/PageBar.vue';
 import bus from '../libs/bus';
-const category = ref('NEWS');
+const category = ref('NEWS');   // 页面类别
 // const route = useRoute();
-const articles = ref(null);
-const show = ref(null);
-const per = 3;
-const len = ref(0);
-const pages = ref(0);
-const start = ref(0);
+const articles = ref(null); // 总文章
+const show = ref(null); // 本页展示的文章
+const per = 3;  // 每页展示数量
+const len = ref(0); // 总文章数
+const pages = ref(0);   // 总页数
+const start = ref(0);   // 起始页数
 // fetch请求本地文件时的路径应该相对于index.html
 fetch('../json/articles.json')
     .then(_ => _.json())

@@ -17,6 +17,7 @@
 import { ref, reactive, computed } from "@vue/reactivity";
 import { defineEmits } from '@vue/runtime-core';
 import bus from "../libs/bus";
+// 获取总页数
 const pages = ref([])
 const getTotal = (total) => {
     console.log(total)
@@ -26,8 +27,7 @@ const getTotal = (total) => {
 };
 bus.on('totalGet', getTotal)
 
-const emit = defineEmits(['pageChange']);
-
+// 渲染控制数据
 const control = reactive({
     active: 1,
     pageShow: computed(() => pages.value.filter(num => {
@@ -51,7 +51,9 @@ const control = reactive({
     })
 })
 
-// 点击时间
+// 换页触发事件
+const emit = defineEmits(['pageChange']);
+// 点击事件，换页
 const start = () => {
     control.active = 1
     emit('pageChange', control.active)
