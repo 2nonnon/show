@@ -21,9 +21,11 @@ import bus from "../libs/bus";
 const pages = ref([])
 const getTotal = (total) => {
     console.log(total)
+    pages.value.length = 0
     for (let i = 1; i <= total; i++) {
         pages.value.push(i);
     }
+    start()
 };
 bus.on('totalGet', getTotal)
 
