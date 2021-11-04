@@ -26,6 +26,11 @@ const routes = [
         path: ':id',
         name: '0001',
         component: () => import(/* webpackChunkName: "0001" */ '../pages/0001.vue')
+      },
+      {
+        path: ':id',
+        name: '0001_flex',
+        component: () => import(/* webpackChunkName: "0001" */ '../pages/0001_flex.vue')
       }
     ]
   },

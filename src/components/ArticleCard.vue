@@ -64,10 +64,10 @@ const tagNav = (tag) => {
 // 进入文章页面
 const toArticle = (id, tag) => {
     console.log(id, tag)
-    router.replace({
+    router.push({
         name: 'Container',
         params: {
-            'tag': tag,
+            'tag': tag.toLowerCase(),
             'id': id,
         }
     })

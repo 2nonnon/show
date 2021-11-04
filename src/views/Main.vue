@@ -51,6 +51,10 @@ fetch('../json/articles.json')
 const changePage = page => {
     start.value = (page - 1) * per
     // show.value = cateArticles.value.slice(start.value, start.value + per)
+    scrollToTop()
+}
+const scrollToTop = () => {
+    window.scrollTo(0, 0);
 }
 
 // 根据类别改变内容
@@ -76,6 +80,7 @@ const searchHandle = value => {
     category.value = `${value.slice(0, 12)}${value.length > 12 ? '...' : ''}的搜索结果`
     cateArticles.value = [...articles.value.filter(item => item.title.indexOf(value) !== -1), ...articles.value.filter(item => item.tags.indexOf(value) !== -1)]
     bus.emit('totalGet', pages.value)
+    scrollToTop()
 }
 bus.on('search', searchHandle)
 
@@ -88,6 +93,7 @@ const changeCate = tag => {
     category.value = tag.toUpperCase()
     cateShow(tag)
     bus.emit('totalGet', pages.value)
+    scrollToTop()
 }
 bus.on('cateChange', changeCate);
 // 卸载前移除监听
