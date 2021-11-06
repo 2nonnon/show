@@ -23,7 +23,7 @@ import { onBeforeUnmount } from '@vue/runtime-core';
 import ArticleCard from '../components/ArticleCard.vue';
 import PageBar from '../components/PageBar.vue';
 import bus from '../libs/bus';
-const category = ref('News');   // 页面类别
+const category = ref('NEWS');   // 页面类别
 // const route = useRoute();
 const articles = ref(null); // 总文章
 const cateArticles = ref(null); // 展示类别的文章数

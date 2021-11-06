@@ -16,19 +16,19 @@ const routes = [
     component: () => import(/* webpackChunkName: "Main" */ '../views/Main.vue'),
   },
   {
-    path: '/article/:tag',
+    path: '/article',
     name: 'Container',
     component: () => {
       return import(/* webpackChunkName: "Container" */ '../views/Container.vue')
     },
     children: [
       {
-        path: ':id',
+        path: ':tag/0001',
         name: '0001',
         component: () => import(/* webpackChunkName: "0001" */ '../pages/0001.vue')
       },
       {
-        path: ':id',
+        path: ':tag/0001_flex',
         name: '0001_flex',
         component: () => import(/* webpackChunkName: "0001_flex" */ '../pages/0001_flex.vue')
       }

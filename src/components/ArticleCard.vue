@@ -65,10 +65,9 @@ const tagNav = (tag) => {
 const toArticle = (id, tag) => {
     console.log(id, tag)
     router.push({
-        name: 'Container',
+        name: id,
         params: {
             'tag': tag.toLowerCase(),
-            'id': id,
         }
     })
 }

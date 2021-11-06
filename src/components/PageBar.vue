@@ -1,15 +1,15 @@
 <template>
     <section class="container center">
-        <div class="page-item" v-if="control.start" @click="start">«</div>
-        <div class="page-item" v-if="control.last" @click="last">‹</div>
+        <div class="page-item" v-if="control.start" @click="turn(start)">«</div>
+        <div class="page-item" v-if="control.last" @click="turn(last)">‹</div>
         <div 
-            :class="['page-item', { 'active': page === control.active }]" 
+            :class="['page-item', { 'active': page === control.activePage }]" 
             v-for="page, i in control.pageShow" 
             :key="`${page}${i}`" 
-            @click="toPage(page)"
+            @click="turn(toPage, page)"
         >{{ page }}</div>
-        <div class="page-item" v-if="control.next" @click="next">›</div>
-        <div class="page-item" v-if="control.end" @click="end">»</div>
+        <div class="page-item" v-if="control.next" @click="turn(next)">›</div>
+        <div class="page-item" v-if="control.end" @click="turn(end)">»</div>
     </section>
 </template>
 
@@ -31,52 +31,49 @@ bus.on('totalGet', getTotal)
 
 // 渲染控制数据
 const control = reactive({
-    active: 1,
+    activePage: 1,
     pageShow: computed(() => pages.value.filter(num => {
-       return  num >= control.active - 2 && num <= control.active + 2
+       return  num >= control.activePage - 2 && num <= control.activePage + 2
     })),
     start: computed(() => {
-        if (control.active > 3) return true;
+        if (control.activePage > 3) return true;
         else return false;
     }),
     last: computed(() => {
-        if (control.active > 1) return true;
+        if (control.activePage > 1) return true;
         else return false;
     }),
     next: computed(() => {
-        if (pages.value.length - control.active > 0) return true;
+        if (pages.value.length - control.activePage > 0) return true;
         else return false;
     }),
     end: computed(() => {
-        if (pages.value.length - control.active > 2) return true;
+        if (pages.value.length - control.activePage > 2) return true;
         else return false;
     })
 })
 
 // 换页触发事件
 const emit = defineEmits(['pageChange']);
-// 点击事件，换页
+// 点击事件，换页，(策略模式)
 const start = () => {
-    control.active = 1
-    emit('pageChange', control.active)
+    control.activePage = 1
 }
 const last = () => {
-    control.active -= 1
-    emit('pageChange', control.active)
+    control.activePage -= 1
 }
 const next = () => {
-    control.active += 1
-    emit('pageChange', control.active)
+    control.activePage += 1
 }
 const end = () => {
-    control.active = pages.value.length
-    emit('pageChange', control.active)
+    control.activePage = pages.value.length
 }
 const toPage = (page) => {
-    if (page !== control.active) {
-        control.active = page
-        emit('pageChange', control.active)
-    }
+    control.activePage = page
+}
+const turn = (handle, page = 0) => {
+    page ? handle(page) : handle()
+    emit('pageChange', control.activePage)
 }
 </script>
 
@@ -107,5 +104,6 @@ const toPage = (page) => {
 }
 .active {
     background-color: #FFDD00 !important;
+    pointer-events: none;  /* 取消鼠标事件 */
 }
 </style>

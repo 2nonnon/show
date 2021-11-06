@@ -6,7 +6,7 @@
             <div class="menu icon" @click="menuToggle"></div>
         </div>
         <div class="wrapper" v-if="toggleS">
-            <input type="text" autofocus="autofocus" v-model.lazy="value" @keypress.enter="search"/>
+            <input type="text" ref="input" v-model.lazy="value" @keypress.enter="search" />
             <div class="button" @click="search">SEARCH</div>
         </div>
         <div class="categories" v-if="toggleM">
@@ -19,38 +19,45 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 // import { defineEmits } from '@vue/runtime-core';
-import { ref } from '@vue/reactivity';
+import { ref } from '@vue/reactivity'
 import bus from '../libs/bus'
+import { nextTick } from '@vue/runtime-core'
 // 首页
-const router = useRouter();
+const router = useRouter()
+// 输入框获取光标
+const input = ref(null)
+const focus = () => {
+    if (toggleS.value) nextTick(() => input.value.focus())
+}
 // 搜索切换
-let toggleS = ref(false);
+let toggleS = ref(false)
 const searchToggle = () => {
-    toggleS.value = !toggleS.value;
+    toggleS.value = !toggleS.value
+    focus()
 }
 // 搜索事件触发
 const value = ref('')
 // const emit = defineEmits(['search']);
 const search = () => {
-    console.log(value.value);
+    console.log(value.value)
     if (value.value !== '') bus.emit('search', value.value)
     value.value = ''
     searchToggle()
 }
 // 菜单切换
-let toggleM = ref(false);
+let toggleM = ref(false)
 const menuToggle = () => {
-    toggleM.value = !toggleM.value;
+    toggleM.value = !toggleM.value
 }
 // 菜单选项
-const categories = ref(['Home', 'Web', 'Other', 'Contact']);
+const categories = ref(['Home', 'Web', 'Other', 'Contact'])
 const menuNav = (target) => {
-    if (!target || target === 'Home') target = 'News';
-    router.replace({ name: 'Category' , params:{ 'category': target.toLowerCase() }});
+    if (!target || target === 'Home') target = 'News'
+    router.replace({ name: 'Category', params: { 'category': target.toLowerCase() } })
     bus.emit('cateChange', target)
-    if (toggleM.value) menuToggle();
+    if (toggleM.value) menuToggle()
 }
 </script>
 
@@ -66,6 +73,7 @@ const menuNav = (target) => {
     justify-content: space-between;
     background-color: #ffdd00;
     position: relative;
+    user-select: none;
 }
 .left {
     font-size: 1.5rem;
@@ -83,7 +91,7 @@ const menuNav = (target) => {
     justify-content: flex-end;
 }
 .wrapper > input[type="text"] {
-    border: 0.1rem solid #eee;
+    border: 0.1rem solid #ffdd00;
     border-radius: 0.3rem 0 0 0.3rem;
     border-right: 0;
     /* box-shadow: 0 0 0 .1rem #eee inset; */
@@ -91,6 +99,7 @@ const menuNav = (target) => {
     height: 2rem;
     flex: 1;
     max-width: 20rem;
+    caret-color: #ffdd00; /* 光标颜色 */
 }
 .wrapper > input[type="text"]:focus {
     outline: none;
