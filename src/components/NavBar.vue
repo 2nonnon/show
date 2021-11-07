@@ -52,11 +52,15 @@ const menuToggle = () => {
     toggleM.value = !toggleM.value
 }
 // 菜单选项
-const categories = ref(['Home', 'Web', 'Other', 'Contact'])
+const categories = ref(['Home', 'Web', 'Other', 'Game'])
 const menuNav = (target) => {
     if (!target || target === 'Home') target = 'News'
-    router.replace({ name: 'Category', params: { 'category': target.toLowerCase() } })
-    bus.emit('cateChange', target)
+    if (target === 'Game') {
+        router.replace({ name: 'Game' })
+    } else {
+        router.replace({ name: 'Category', params: { 'category': target.toLowerCase() } })
+        bus.emit('cateChange', target)
+    }
     if (toggleM.value) menuToggle()
 }
 </script>
