@@ -1,6 +1,13 @@
 <template>
     <div class="wrapper center">
         <canvas id="game" ref="canvas">Your browser do not support canvas</canvas>
+        <div class="win" v-show="win">You win !</div>
+        <div class="board">
+            <div :class="['key', 'left', {'stop': win}]" @click="move('a')"></div>
+            <div :class="['key', 'up', {'stop': win}]" @click="move('w')"></div>
+            <div :class="['key', 'down', {'stop': win}]" @click="move('s')"></div>
+            <div :class="['key', 'right', {'stop': win}]" @click="move('d')"></div>
+        </div>
     </div>
 </template>
 
@@ -8,13 +15,14 @@
 import { ref } from "@vue/reactivity"
 import { watch } from "@vue/runtime-core"
 const canvas = ref(null)
+const win = ref(false)
 
 let ctx
 const createMap = (ctx, size = 100, n = 3) => {
     ctx.beginPath();
-    ctx.rect(10, 10, n * size, n * size)
-    for (let i = 10; i < n * size; i += size) {
-        for (let j = 10; j < n * size; j += size) {
+    // ctx.rect(0, 0, n * size, n * size)
+    for (let i = 0; i < n * size; i += size) {
+        for (let j = 0; j < n * size; j += size) {
             ctx.rect(i, j, size, size)
         }
     }
@@ -43,16 +51,17 @@ const getTarget = () => {
     const flag = location.x - target.x === -30 && location.y - target.y === -30
     if (flag) {
         window.removeEventListener('keypress', keypressHandler)
+        win.value = true
         console.log('you win')
     }
 }
 const location = {
-    x: 30,
-    y: 230
+    x: 20,
+    y: 220
 }
 const target = {
-    x: 260,
-    y: 60
+    x: 250,
+    y: 50
 }
 const directions = {
     'w': () => {
@@ -69,7 +78,7 @@ const directions = {
     }
 }
 const move = (key) => {
-    ctx.clearRect(location.x - 10, location.y - 10, 80, 80)
+    ctx.clearRect(location.x - 5, location.y - 5, 80, 80)
     directions[key]()
     createPlayer(ctx, location.x, location.y)
     getTarget()
@@ -80,16 +89,77 @@ const keypressHandler = (ev) => {
 }
 watch(canvas, () => {
     console.log(canvas)
-    canvas.value.width = '400'
-    canvas.value.height = '400'
+    canvas.value.width = '300'
+    canvas.value.height = '300'
     ctx = canvas.value.getContext('2d')
     createMap(ctx)
-    createTarget(ctx, 260, 60)
-    createPlayer(ctx, 30, 230)
+    createTarget(ctx, target.x, target.y)
+    createPlayer(ctx, location.x, location.y)
     window.addEventListener('keypress', keypressHandler)
 })
 
 </script>
 
 <style scoped>
+.wrapper {
+    flex-direction: column;
+    gap: 1.5rem 0;
+}
+#game {
+    border: 1px solid #000;
+    /* box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.33); */
+}
+.win {
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgb(95, 255, 47);
+}
+.board {
+    position: relative;
+    height: 10rem;
+    width: 10rem;
+    border-radius: 50%;
+    overflow: hidden;
+    --key-color: rgb(237, 194, 100);
+}
+.board::after {
+    content: "";
+    display: block;
+    height: 4rem;
+    width: 4rem;
+    position: absolute;
+    background: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+.board .key {
+    position: absolute;
+    border-top: 8.2rem solid transparent;
+    border-left: 8.2rem solid var(--key-color);
+}
+.board .key.left {
+    left: -50%;
+    top: 50%;
+    transform: translateY(-50%) rotateZ(-135deg);
+}
+.board .key.right {
+    right: -50%;
+    top: 50%;
+    transform: translateY(-50%) rotateZ(45deg);
+}
+.board .key.up {
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%) rotateZ(-45deg);
+}
+.board .key.down {
+    bottom: -50%;
+    left: 50%;
+    transform: translateX(-50%) rotateZ(135deg);
+}
+.stop {
+    pointer-events: none;
+}
 </style>
