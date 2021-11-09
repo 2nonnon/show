@@ -1,12 +1,12 @@
 <template>
     <div class="wrapper center">
         <canvas id="game" ref="canvas">Your browser do not support canvas</canvas>
-        <div class="win" v-show="win">You win !</div>
+        <div class="win" v-if="win">You win !</div>
         <div class="board">
-            <div :class="['key', 'left', {'stop': win}]" @click="move('a')"></div>
-            <div :class="['key', 'up', {'stop': win}]" @click="move('w')"></div>
-            <div :class="['key', 'down', {'stop': win}]" @click="move('s')"></div>
-            <div :class="['key', 'right', {'stop': win}]" @click="move('d')"></div>
+            <div :class="['key', 'left', { 'stop': win }, {'active': active === 'a'}]" ref="left" data-key="a"></div>
+            <div :class="['key', 'up', { 'stop': win }, {'active': active === 'w'}]"  ref="up" data-key="w"></div>
+            <div :class="['key', 'down', { 'stop': win }, {'active': active === 's'}]"  ref="down" data-key="s"></div>
+            <div :class="['key', 'right', { 'stop': win }, {'active': active === 'd'}]"  ref="right" data-key="d"></div>
         </div>
     </div>
 </template>
@@ -16,11 +16,11 @@ import { ref } from "@vue/reactivity"
 import { watch } from "@vue/runtime-core"
 const canvas = ref(null)
 const win = ref(false)
+const active = ref('')
 
 let ctx
 const createMap = (ctx, size = 100, n = 3) => {
     ctx.beginPath();
-    // ctx.rect(0, 0, n * size, n * size)
     for (let i = 0; i < n * size; i += size) {
         for (let j = 0; j < n * size; j += size) {
             ctx.rect(i, j, size, size)
@@ -28,10 +28,6 @@ const createMap = (ctx, size = 100, n = 3) => {
     }
     ctx.stroke();
     ctx.closePath();
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 2;
-    ctx.shadowBlur = 5;
-    ctx.shadowColor = 'rgba(0,0,0,0.33)';
 }
 const createTarget = (ctx, x, y, size = 30) => {
     ctx.beginPath();
@@ -48,14 +44,14 @@ const createPlayer = (ctx, x, y, size = 60) => {
     ctx.closePath();
 }
 const getTarget = () => {
-    const flag = location.x - target.x === -30 && location.y - target.y === -30
+    const flag = player.x - target.x === -30 && player.y - target.y === -30
     if (flag) {
         window.removeEventListener('keypress', keypressHandler)
         win.value = true
         console.log('you win')
     }
 }
-const location = {
+const player = {
     x: 20,
     y: 220
 }
@@ -65,51 +61,82 @@ const target = {
 }
 const directions = {
     'w': () => {
-        location.y = location.y - 100 > 0 ? location.y - 100 : location.y
+        player.y = player.y - 100 > 0 ? player.y - 100 : player.y
     },
     'a': () => {
-        location.x = location.x - 100 > 0 ? location.x - 100 : location.x
+        player.x = player.x - 100 > 0 ? player.x - 100 : player.x
     },
     's': () => {
-        location.y = location.y + 100 < 300 ? location.y + 100 : location.y
+        player.y = player.y + 100 < 300 ? player.y + 100 : player.y
     },
     'd': () => {
-        location.x = location.x + 100 < 300 ? location.x + 100 : location.x
+        player.x = player.x + 100 < 300 ? player.x + 100 : player.x
     }
 }
 const move = (key) => {
-    ctx.clearRect(location.x - 5, location.y - 5, 80, 80)
+    ctx.clearRect(player.x - 5, player.y - 5, 80, 80)
     directions[key]()
-    createPlayer(ctx, location.x, location.y)
+    createPlayer(ctx, player.x, player.y)
     getTarget()
 }
 const keypressHandler = (ev) => {
-    // console.log(ev)
     move(ev.key)
 }
 watch(canvas, () => {
-    console.log(canvas)
     canvas.value.width = '300'
     canvas.value.height = '300'
     ctx = canvas.value.getContext('2d')
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowBlur = 5;
+    ctx.shadowColor = 'rgba(0,0,0,0.33)';
     createMap(ctx)
     createTarget(ctx, target.x, target.y)
-    createPlayer(ctx, location.x, location.y)
+    createPlayer(ctx, player.x, player.y)
     window.addEventListener('keypress', keypressHandler)
+})
+const touchStartHandler = (target) => {
+    active.value = target.target.dataset.key
+    target.target.dataset.key && move(target.target.dataset.key)
+}
+const touchEndHandler = () => {
+    active.value = ''
+}
+const left = ref(null);
+const up = ref(null);
+const down = ref(null);
+const right = ref(null);
+watch(left, () => {
+    left.value.addEventListener('touchstart', touchStartHandler)
+    left.value.addEventListener('touchend', touchEndHandler)
+})
+watch(up, () => {
+    up.value.addEventListener('touchstart', touchStartHandler)
+    up.value.addEventListener('touchend', touchEndHandler)
+})
+watch(down, () => {
+    down.value.addEventListener('touchstart', touchStartHandler)
+    down.value.addEventListener('touchend', touchEndHandler)
+})
+watch(right, () => {
+    right.value.addEventListener('touchstart', touchStartHandler)
+    right.value.addEventListener('touchend', touchEndHandler)
 })
 
 </script>
 
 <style scoped>
 .wrapper {
+    margin-top: 2rem;
+    padding-bottom: 1rem;
     flex-direction: column;
-    gap: 1.5rem 0;
+    gap: 3rem 0;
 }
 #game {
     border: 1px solid #000;
-    /* box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.33); */
 }
 .win {
+    position: absolute;
     font-size: 2rem;
     font-weight: bold;
     color: rgb(95, 255, 47);
@@ -121,6 +148,8 @@ watch(canvas, () => {
     border-radius: 50%;
     overflow: hidden;
     --key-color: rgb(237, 194, 100);
+    box-shadow: .1rem .1rem .5rem rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 .board::after {
     content: "";
@@ -133,11 +162,29 @@ watch(canvas, () => {
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
+    box-shadow: inset .1rem .1rem .5rem rgba(0, 0, 0, 0.3);
 }
 .board .key {
+    --width: 8.2rem;
     position: absolute;
-    border-top: 8.2rem solid transparent;
-    border-left: 8.2rem solid var(--key-color);
+    border-top: var(--width) solid transparent;
+    border-left: var(--width) solid var(--key-color);
+}
+.board .key::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    background-image: linear-gradient(#fff 0%, #fff 100%),
+    linear-gradient(#fff 0%, #fff 100%);
+    background-position: 10% 50%, 50% 10%;
+    background-size: 1rem .2rem, .2rem 1rem;
+    background-repeat: no-repeat;
+    --ratio: 0.3;
+    bottom: calc(var(--width) * var(--ratio));
+    right: calc(var(--width) * (1 - var(--ratio)));
+    transform: translate(50%, 50%) rotateZ(-90deg);
 }
 .board .key.left {
     left: -50%;
@@ -158,6 +205,13 @@ watch(canvas, () => {
     bottom: -50%;
     left: 50%;
     transform: translateX(-50%) rotateZ(135deg);
+}
+.board .key.active {
+    border-left-color: aqua;
+}
+.board .key.active::after {
+    background-image: linear-gradient(#ff5 0%, #ff5 100%),
+    linear-gradient(#ff5 0%, #ff5 100%);
 }
 .stop {
     pointer-events: none;
