@@ -102,8 +102,8 @@ const turn = (handle, page = 0) => {
 .page-item:hover {
     background-color: #FFF6BF;
 }
-.active {
-    background-color: #FFDD00 !important;
+.container .page-item.active {
+    background-color: #FFDD00;
     pointer-events: none;  /* 取消鼠标事件 */
 }
 </style>

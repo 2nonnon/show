@@ -1,13 +1,13 @@
 <template>
     <section class="container">
         <header class="header">
-            <slot name="header">header</slot>
+            <router-view name="header"></router-view>
         </header>
         <section class="main">
-            <slot name="main">main</slot>
+            <router-view name="main"></router-view>
         </section>
         <footer class="footer">
-            <slot name="footer">footer</slot>
+            <router-view name="footer"></router-view>
         </footer>
     </section>
 </template>
@@ -36,7 +36,4 @@
 .container .main {
     flex: 1;
 }
-/* .container > * {
-    border: 1px solid black;
-} */
 </style>

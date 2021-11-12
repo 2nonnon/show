@@ -2,8 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "游ゴシック", "Yu Gothic", YuGothic, sans-serif;
-  /* font-family: Helvetica, "PingFang SC", "Microsoft Yahei", sans-serif; */
+  font-family: Helvetica, "PingFang SC", "Microsoft Yahei", sans-serif;
 }
 
 .center {

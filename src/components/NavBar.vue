@@ -1,12 +1,12 @@
 <template>
-    <section class="container">
+    <section class="header">
         <div class="left center" @click="menuNav()">NON</div>
         <div class="right">
             <div class="search icon" :class="{ 'active': toggleS }" @click="searchToggle"></div>
             <div class="menu icon" @click="menuToggle"></div>
         </div>
         <div class="wrapper" v-if="toggleS">
-            <input type="text" ref="input" v-model.lazy="value" @keypress.enter="search" />
+            <input type="text" ref="input" v-model="value" @keypress.enter="search" />
             <div class="button" @click="search">SEARCH</div>
         </div>
         <div class="categories" v-if="toggleM">
@@ -20,7 +20,6 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-// import { defineEmits } from '@vue/runtime-core';
 import { ref } from '@vue/reactivity'
 import bus from '../libs/bus'
 import { nextTick } from '@vue/runtime-core'
@@ -39,7 +38,6 @@ const searchToggle = () => {
 }
 // 搜索事件触发
 const value = ref('')
-// const emit = defineEmits(['search']);
 const search = () => {
     console.log(value.value)
     if (value.value !== '') bus.emit('search', value.value)
@@ -56,9 +54,9 @@ const categories = ref(['Home', 'Web', 'Other', 'Game'])
 const menuNav = (target) => {
     if (!target || target === 'Home') target = 'News'
     if (target === 'Game') {
-        router.replace({ name: 'Game' })
+        router.push({ name: 'Game' })
     } else {
-        router.replace({ name: 'Category', params: { 'category': target.toLowerCase() } })
+        router.push({ name: 'Category', params: { 'category': target.toLowerCase() } })
         bus.emit('cateChange', target)
     }
     if (toggleM.value) menuToggle()
@@ -66,12 +64,12 @@ const menuNav = (target) => {
 </script>
 
 <style scoped>
-.container,
+.header,
 .right,
 .wrapper {
     display: flex;
 }
-.container {
+.header {
     width: 100%;
     height: 100%;
     justify-content: space-between;
@@ -98,7 +96,6 @@ const menuNav = (target) => {
     border: 0.1rem solid #ffdd00;
     border-radius: 0.3rem 0 0 0.3rem;
     border-right: 0;
-    /* box-shadow: 0 0 0 .1rem #eee inset; */
     padding-left: 0.3rem;
     height: 2rem;
     flex: 1;

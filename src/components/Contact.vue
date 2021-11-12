@@ -1,7 +1,7 @@
 <template>
-    <div class="contact center">
+    <footer class="contact center">
         <span class="email">contact@nnln.love</span>
-    </div>
+    </footer>
 </template>
 
 <style>

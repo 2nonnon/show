@@ -26,6 +26,7 @@ const createMap = (ctx, size = 100, n = 3) => {
             ctx.rect(i, j, size, size)
         }
     }
+    ctx.rect(0, 0, size * n, size * n)
     ctx.stroke();
     ctx.closePath();
 }
@@ -132,9 +133,9 @@ watch(right, () => {
     flex-direction: column;
     gap: 3rem 0;
 }
-#game {
+/* #game {
     border: 1px solid #000;
-}
+} */
 .win {
     position: absolute;
     font-size: 2rem;
@@ -169,6 +170,7 @@ watch(right, () => {
     position: absolute;
     border-top: var(--width) solid transparent;
     border-left: var(--width) solid var(--key-color);
+    transition: all .3s;
 }
 .board .key::after {
     content: '';
@@ -207,7 +209,7 @@ watch(right, () => {
     transform: translateX(-50%) rotateZ(135deg);
 }
 .board .key.active {
-    border-left-color: aqua;
+    border-left-color: rgb(255, 145, 0);
 }
 .board .key.active::after {
     background-image: linear-gradient(#ff5 0%, #ff5 100%),

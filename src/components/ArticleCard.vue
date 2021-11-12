@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <section class="container">
         <div class="cover" @click="toArticle(id, tags[0])">
             <img :src="imgUrl" />
         </div>
@@ -15,7 +15,7 @@
                 <div class="continue" @click="toArticle(id, tags[0])">继续阅读</div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script setup>
@@ -54,7 +54,7 @@ const emit = defineEmits({
 const tagNav = (tag) => {
     console.log(tag)
     emit('cateChange', tag)
-    router.replace({
+    router.push({
         name: 'Category',
         params: {
             'category': tag
